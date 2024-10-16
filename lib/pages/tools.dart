@@ -1,0 +1,39 @@
+import "package:flutter/material.dart";
+import "package:routemaster/routemaster.dart";
+
+class ToolsScreen extends StatelessWidget {
+  final String name;
+  const ToolsScreen({
+    Key? key,
+    required this.name,
+  }) : super(key: key);
+
+  void navToEditDepart(BuildContext context){
+    Routemaster.of(context).push('/$name/edit-depart');
+  }
+
+  void navToAddMods(BuildContext context){
+    Routemaster.of(context).push('/$name/add-mods');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Mod Tools')),
+      body: Column(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.add_moderator),
+            title: const Text('Add Moderators'),
+            onTap: () =>  navToAddMods(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.edit),
+            title: const Text('Edit Department'),
+            onTap: () => navToEditDepart(context),
+          )
+        ],
+      ),
+    );
+  }
+}

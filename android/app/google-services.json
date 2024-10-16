@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "926846771802",
+    "project_id": "socialwall-fcc35",
+    "storage_bucket": "socialwall-fcc35.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926846771802:android:4a898c1348d200c0336e63",
+        "android_client_info": {
+          "package_name": "com.example.socialwall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "926846771802-gu7mjpgar55sgn2ov8p9iqbfmpk4jk03.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.socialwall",
+            "certificate_hash": "2bb03a1f9735763f4719f6503d7e38aa97235c9d"
+          }
+        },
+        {
+          "client_id": "926846771802-il2tb3e03an1b9trao57l9up850tkhqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl_czAKjvT4ItrTnhNBdtg3f0kuSSurvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "926846771802-il2tb3e03an1b9trao57l9up850tkhqn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "926846771802-ip3crqgv98p2hk95r4flgeego1d9a937.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.socialwall"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
