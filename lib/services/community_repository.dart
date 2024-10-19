@@ -65,6 +65,16 @@ class CommunityRepository {
     });
   }
 
+  Stream<List<Community>> getDepartments() {
+    return _departments.snapshots().map((event) {
+      List<Community> departments = [];
+      for (var doc in event.docs) {
+        departments.add(Community.fromMap(doc.data() as Map<String, dynamic>));
+      }
+      return departments;
+    });
+  }
+
   Stream<Community> getCommunityByName(String name) {
     return _departments.doc(name).snapshots().map(
         (event) => Community.fromMap(event.data() as Map<String, dynamic>));
@@ -86,6 +96,7 @@ class CommunityRepository {
   //Search Button
 
   Stream<List<Community>> searchCommunity(String query) {
+    query = query.replaceAll(RegExp(r"\s+"), "").toLowerCase();
     return _departments.where(
       'name',
       isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,

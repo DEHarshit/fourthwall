@@ -60,13 +60,38 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
               },
               body: ref.watch(getPostCommentsProvider(widget.postId)).when(
                     data: (data) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final comment = data[index];
-                          return CommentCard(comment: comment);
-                        },
+                      return Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Comments . . .',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Divider(
+                              color: Colors.black,
+                            ),
+                            if (data.isEmpty)
+                              const Center(child: Text('No comments yet.'))
+                            else
+                              Expanded(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: data.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final comment = data[index];
+                                    return CommentCard(comment: comment);
+                                  },
+                                ),
+                              ),
+                          ],
+                        ),
                       );
                     },
                     error: (error, stackTrace) => ErrorText(
@@ -86,7 +111,16 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
           alignment: Alignment.center,
           height: 45,
           width: MediaQuery.of(context).size.width,
-          color: Colors.blueAccent,
+          decoration: BoxDecoration(
+            color: Colors.blueAccent,
+            border: Border.all(
+              color: Colors.blueAccent,
+            ),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
+            ),
+          ),
           child: Row(
             children: [
               const SizedBox(
@@ -99,21 +133,30 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                   child: TextField(
                     style: const TextStyle(fontSize: 15),
                     controller: commentController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       fillColor: Colors.white,
                       hintText: 'What are your thoughts?',
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0.0, horizontal: 10.0),
                       filled: true,
-                      border: InputBorder.none,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
               const SizedBox(width: 5),
               CircleAvatar(
-                radius: 17,
-                backgroundColor: Colors.white,
+                  radius: 17,
+                  backgroundColor: Colors.white,
                   child: IconButton(
-                    alignment: Alignment.topCenter,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0.0, horizontal: 7),
                       onPressed: () => addComment(widget.postId),
                       icon: const Icon(Icons.send))),
               const SizedBox(width: 5),

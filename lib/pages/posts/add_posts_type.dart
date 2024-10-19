@@ -204,7 +204,7 @@ class _AddPostTypesState extends ConsumerState<AddPostTypes> {
                                 value: selectedCommunity ?? data[0],
                                 items: data
                                     .map((e) => DropdownMenuItem(
-                                        value: e, child: Text(e.name)))
+                                        value: e, child: Text(e.id)))
                                     .toList(),
                                 onChanged: (val) {
                                   setState(() {

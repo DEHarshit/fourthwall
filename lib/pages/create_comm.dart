@@ -49,10 +49,10 @@ class _CreateCommunityState extends ConsumerState<ConsumerStatefulWidget> {
               // text field
 
               TextField(
-                inputFormatters: [
+                /* inputFormatters: [
                   FilteringTextInputFormatter.deny(
                      RegExp(r'\s')),
-                ],
+                ], */
 
 
                 controller: communityNameController,

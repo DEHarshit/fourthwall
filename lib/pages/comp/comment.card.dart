@@ -11,8 +11,8 @@ class CommentCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        vertical: 10,
-        horizontal: 14,
+        vertical: 0,
+        horizontal: 0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,10 +50,10 @@ class CommentCard extends ConsumerWidget {
                 onPressed: () {},
                 icon: const Icon(Icons.reply),
               ),
-              
-              const Text('Reply',
-                style: TextStyle(fontSize: 17)),
-                const SizedBox(width: 10,),
+              const Text('Reply', style: TextStyle(fontSize: 17)),
+              const SizedBox(
+                width: 10,
+              ),
               IconButton(
                 onPressed: () {},
                 icon: const Icon(
@@ -73,6 +73,9 @@ class CommentCard extends ConsumerWidget {
             ],
           ),
           const SizedBox(),
+          const Divider(
+            color: Colors.black,
+          ),
         ],
       ),
     );

@@ -47,6 +47,8 @@ void navToEditUser(BuildContext context){
                             radius: 45,
                           ),
                         ),
+                        viewer?.name == user.name
+                        ?
                         Container(
                           alignment: Alignment.bottomLeft,
                           padding: const EdgeInsets.all(20),
@@ -62,7 +64,8 @@ void navToEditUser(BuildContext context){
                             ),
                             label: const Text("Edit Profile"),
                           ),
-                        ),
+                        )
+                        : Container(),
                       ],
                     ),
                   ),

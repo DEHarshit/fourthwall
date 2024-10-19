@@ -50,9 +50,9 @@ class ProfileList extends ConsumerWidget {
             fontWeight: FontWeight.bold,
           ),),
 
-        SizedBox(height: 20,),
+        const SizedBox(height: 20,),
 
-        Divider(
+        const Divider(
           color: Colors.black,
         ),
 
@@ -79,11 +79,11 @@ class ProfileList extends ConsumerWidget {
           onTap: () => logOut(ref),
         ),
 
-        Divider(
+        const Divider(
           color: Colors.black,
         ),
-        ListTile(
-          title: const Text('Your Communities'),
+        const ListTile(
+          title: Text('Your Communities'),
         ),
         //department list
         ref.watch(userCommunitiesProvider).when(
@@ -96,7 +96,7 @@ class ProfileList extends ConsumerWidget {
                             leading: CircleAvatar(
                               backgroundImage: NetworkImage(community.avatar),
                             ),
-                            title: Text(community.name),
+                            title: Text(community.id),
                             onTap: () => navToDepartment(context, community),
                         );
                       }),

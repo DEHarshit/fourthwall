@@ -18,6 +18,11 @@ final userCommunitiesProvider = StreamProvider((ref) {
   return communityController.getUserDepartments();
 });
 
+final communitiesProvider = StreamProvider((ref) {
+  final communityController = ref.read(communityControllerProvider.notifier);
+  return communityController.getDepartments();
+});
+
 final getCommunityPostsProvider = StreamProvider.family((ref, String name) {
   return ref.read(communityControllerProvider.notifier).getCommunityPosts(name);
 });
@@ -63,7 +68,7 @@ class CommunityController extends StateNotifier<bool> {
     final uid = _ref.read(userProvider)?.uid ?? ''; //read user uid
     Community community = Community(
       id: name,
-      name: name,
+      name: name.replaceAll(RegExp(r"\s+"), "").toLowerCase(),
       banner: Constants.bannerDefault,
       avatar: Constants.avatarDefault,
       members: [uid],
@@ -102,6 +107,11 @@ class CommunityController extends StateNotifier<bool> {
     final uid = _ref.read(userProvider)!.uid;
     return _communityRepository.getUserDepartments(uid);
   }
+
+  Stream<List<Community>> getDepartments() {
+    return _communityRepository.getDepartments();
+  }
+
 
   Stream<Community> getCommunityByName(String name) {
     return _communityRepository.getCommunityByName(name);

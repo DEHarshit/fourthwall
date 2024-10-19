@@ -15,23 +15,25 @@ class CommunityScreen extends ConsumerWidget {
     required this.name,
   });
 
-  void navToTools(BuildContext context){
+  void navToTools(BuildContext context) {
     Routemaster.of(context).push('/$name/mod-tools');
   }
 
-  void joinDepartment(WidgetRef ref,Community department, BuildContext context){
-    ref.read(communityControllerProvider.notifier).joinDepartment(department, context);
+  void joinDepartment(
+      WidgetRef ref, Community department, BuildContext context) {
+    ref
+        .read(communityControllerProvider.notifier)
+        .joinDepartment(department, context);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user= ref.watch(userProvider)!;
+    final user = ref.watch(userProvider)!;
     return Scaffold(
       body: ref.watch(getCommunityByNameProvider(name)).when(
             data: (community) => NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
-
                   //community banner
 
                   SliverAppBar(
@@ -63,12 +65,12 @@ class CommunityScreen extends ConsumerWidget {
                                   radius: 35,
                                 ),
                               ),
-                              
-                          //department name
+
+                              //department name
 
                               SizedBox(width: 35),
                               Text(
-                                community.name,
+                                community.id,
                                 style: const TextStyle(
                                   fontSize: 19,
                                   fontWeight: FontWeight.bold,
@@ -80,44 +82,59 @@ class CommunityScreen extends ConsumerWidget {
                           //count of members
 
                           Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              '${community.members.length} members'
-                            )
-                          ),
+                              padding: const EdgeInsets.only(top: 10),
+                              child:
+                                  Text('${community.members.length} members')),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               community.mods.contains(user.uid)
 
-                              //mod button
+                                  //mod button
 
-                              ? OutlinedButton(
+                                  ? OutlinedButton(
+                                      onPressed: () => navToTools(context),
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                      ),
+                                      child: const Text('Tools'),
+                                    )
+
+                                  //join button
+
+                                  : OutlinedButton(
+                                      onPressed: () => joinDepartment(
+                                          ref, community, context),
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                      ),
+                                      child: Text(
+                                          community.members.contains(user.uid)
+                                              ? 'Joined'
+                                              : 'Join'),
+                                    ),
+                              OutlinedButton(
                                 onPressed: () => navToTools(context),
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
+                                      horizontal: 10),
                                 ),
-                                child: const Text('Tools'),
+                                child: const Text('Question Papers'),
                               )
-
-                              //join button
-
-                              : OutlinedButton(
-                                onPressed: () => joinDepartment(ref,community,context),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                ),
-                                child: Text(community.members.contains(user.uid) ? 'Joined' : 'Join'),
-                              ),
                             ],
                           )
                         ],
@@ -126,21 +143,24 @@ class CommunityScreen extends ConsumerWidget {
                   ),
                 ];
               },
-
-
-              body: ref.watch(getCommunityPostsProvider(name)).when(data: (data){
-                return ListView.builder(
+              body: ref.watch(getCommunityPostsProvider(name)).when(
+                  data: (data) {
+                    return ListView.builder(
                       itemCount: data.length,
                       itemBuilder: (BuildContext context, int index) {
                         final post = data[index];
                         return PostCard(post: post);
                       },
                     );
-              }, error: (error, stackTrace) {return ErrorText(error: error.toString());},
-            loading: () => const Loader()),
+                  },
+                  error: (error, stackTrace) {
+                    return ErrorText(error: error.toString());
+                  },
+                  loading: () => const Loader()),
             ),
             error: (error, stackTrace) => ErrorText(error: error.toString()),
-            loading: () => const Loader(),),
+            loading: () => const Loader(),
+          ),
     );
   }
 }

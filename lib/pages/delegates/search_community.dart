@@ -56,7 +56,7 @@ class SearchCommunityDelegate extends SearchDelegate {
           leading: CircleAvatar(
             backgroundImage: NetworkImage(department.avatar),
           ),
-          title: Text(department.name),
+          title: Text(department.id),
           onTap: ()=> navToDepartment(context, department.name),
         );
       },

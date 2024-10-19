@@ -6,6 +6,7 @@ class Post {
   final String? link;
   final String? description;
   final String communityName;
+  final String communityId;
   final String communityProfile;
   final List<String> upvotes;
   final List<String> downvotes;
@@ -21,6 +22,7 @@ class Post {
     this.link,
     this.description,
     required this.communityName,
+    required this.communityId,
     required this.communityProfile,
     required this.upvotes,
     required this.downvotes,
@@ -38,6 +40,7 @@ class Post {
     String? link,
     String? description,
     String? communityName,
+    String? communityId,
     String? communityProfile,
     List<String>? upvotes,
     List<String>? downvotes,
@@ -54,6 +57,7 @@ class Post {
       link: link ?? this.link,
       description: description ?? this.description,
       communityName: communityName ?? this.communityName,
+      communityId: communityId ?? this.communityId,
       communityProfile: communityProfile ?? this.communityProfile,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
@@ -73,6 +77,7 @@ class Post {
       'link': link,
       'description': description,
       'communityName': communityName,
+      'communityId': communityId,
       'communityProfile': communityProfile,
       'upvotes': upvotes,
       'downvotes': downvotes,
@@ -92,6 +97,7 @@ class Post {
       link: map['link'],
       description: map['description'],
       communityName: map['communityName'] ?? '',
+      communityId: map['communityId'] ?? '',
       communityProfile: map['communityProfile'] ?? '',
       upvotes: List<String>.from(map['upvotes']),
       downvotes: List<String>.from(map['downvotes']),
@@ -105,7 +111,7 @@ class Post {
   }
   @override
   String toString() {
-    return 'Post(id: $id, title: $title, link: $link, description: $description, communityName: $communityName, communityProfile: $communityProfile, upvotes: $upvotes, downvotes: $downvotes, commentCount: $commentCount, username: $username, uid: $uid, type: $type, isAnonymous: $isAnonymous, createdAt: $createdAt)';
+    return 'Post(id: $id, title: $title, link: $link, description: $description, communityName: $communityName, communityId: $communityId, communityProfile: $communityProfile, upvotes: $upvotes, downvotes: $downvotes, commentCount: $commentCount, username: $username, uid: $uid, type: $type, isAnonymous: $isAnonymous, createdAt: $createdAt)';
   }
 
   @override
@@ -118,6 +124,7 @@ class Post {
       other.link == link &&
       other.description == description &&
       other.communityName == communityName &&
+      other.communityId == communityId &&
       other.communityProfile == communityProfile &&
       listEquals(other.upvotes, upvotes) &&
       listEquals(other.downvotes, downvotes) &&
@@ -136,6 +143,7 @@ class Post {
       link.hashCode ^
       description.hashCode ^
       communityName.hashCode ^
+      communityId.hashCode ^
       communityProfile.hashCode ^
       upvotes.hashCode ^
       downvotes.hashCode ^
