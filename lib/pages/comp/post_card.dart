@@ -42,6 +42,69 @@ class PostCard extends ConsumerWidget {
     Routemaster.of(context).push('/post/${post.id}/comments');
   }
 
+  void reportPost(BuildContext context, String userId) {
+    TextEditingController reportController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Report Post"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Please enter the reason for reporting this post:'),
+              const SizedBox(height: 10),
+              TextField(
+                controller: reportController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter reason',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                final reportReason = reportController.text;
+                if (reportReason.isNotEmpty) {
+                  submitReport(context, userId, reportReason);
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please provide a reason for reporting.'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+              child: const Text("Submit"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // report submission
+  void submitReport(BuildContext context, String userId, String reason) {
+    //firebase logic :<
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Report submitted: $reason'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   void showAlertDialog(WidgetRef ref, BuildContext context) {
     Widget continueButton = TextButton(
       child: const Text("No"),
@@ -157,7 +220,15 @@ class PostCard extends ConsumerWidget {
                                         onPressed: () =>
                                             showAlertDialog(ref, context),
                                         icon: const Icon(Icons.delete,
-                                            color: Colors.red))
+                                            color: Colors.red)),
+
+                                  if (post.uid != user.uid)
+                                    IconButton(
+                                      onPressed: () =>
+                                          reportPost(context, user.uid),
+                                      icon: const Icon(Icons.report,
+                                          color: Colors.orange),
+                                    ),
                                 ],
                               ),
                               Padding(
@@ -172,23 +243,22 @@ class PostCard extends ConsumerWidget {
                               ),
                               if (isTypeImage)
                                 GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            PostImage(
-                                                imageUrl: post.link!),
-                                      ),
-                                    );
-                                  },
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.45,
-                                    width: double.infinity,
-                                    child: Image.network(post.link!,
-                                        fit: BoxFit.cover),
-                                  )
-                                ),
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              PostImage(imageUrl: post.link!),
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.45,
+                                      width: double.infinity,
+                                      child: Image.network(post.link!,
+                                          fit: BoxFit.cover),
+                                    )),
                               if (isTypeLink)
                                 Padding(
                                     padding: const EdgeInsets.symmetric(
