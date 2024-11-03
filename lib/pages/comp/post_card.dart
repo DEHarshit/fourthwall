@@ -137,9 +137,8 @@ class PostCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isTypeImage = post.type == 'image';
-    final isTypeText = post.type == 'text';
-    final isTypeLink = post.type == 'link';
+    final isTypeImage = post.link != null;
+    final isTypeText = post.description != null;
     final user = ref.watch(userProvider)!;
     return GestureDetector(
         onTap: () => navToComments(context),
@@ -241,6 +240,18 @@ class PostCard extends ConsumerWidget {
                                       color: Colors.blueGrey),
                                 ),
                               ),
+                              
+                              if (isTypeText)
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 17),
+                                    child: Text(post.description!,
+                                        style: const TextStyle(
+                                            color: Colors.grey)),
+                                  ),
+                                ),
                               if (isTypeImage)
                                 GestureDetector(
                                     onTap: () {
@@ -259,26 +270,6 @@ class PostCard extends ConsumerWidget {
                                       child: Image.network(post.link!,
                                           fit: BoxFit.cover),
                                     )),
-                              if (isTypeLink)
-                                Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 18),
-                                    child: AnyLinkPreview(
-                                      displayDirection:
-                                          UIDirection.uiDirectionHorizontal,
-                                      link: post.link!,
-                                    )),
-                              if (isTypeText)
-                                Container(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 17),
-                                    child: Text(post.description!,
-                                        style: const TextStyle(
-                                            color: Colors.grey)),
-                                  ),
-                                ),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

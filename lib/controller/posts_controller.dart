@@ -64,7 +64,7 @@ class PostController extends StateNotifier<bool> {
 
   //text
 
-  void shareTextPost({
+   void shareTextPost({
     required BuildContext context,
     required String title,
     required Community selectedCommunity,
@@ -94,12 +94,12 @@ class PostController extends StateNotifier<bool> {
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted successfully!');
-      Routemaster.of(context).pop();
+      Routemaster.of(context).push('/post/$postId/comments');
     });
   }
 
   //link
-
+/*
   void shareLinkPost({
     required BuildContext context,
     required String title,
@@ -173,6 +173,50 @@ class PostController extends StateNotifier<bool> {
       res.fold((l) => showSnackBar(context, l.message), (r) {
         showSnackBar(context, 'Posted successfully!');
         Routemaster.of(context).pop();
+      });
+    });
+  } */
+
+ void sharePost({
+    required BuildContext context,
+    required String title,
+    required Community selectedCommunity,
+    required String? description,
+    required File? file,
+    required bool isAnonymous,
+  }) async {
+    state = true;
+    String postId = const Uuid().v1();
+    final user = _ref.read(userProvider)!;
+    final imageRes = await _storageRepository.storeFile(
+      path: 'posts/${selectedCommunity.name}',
+      id: postId,
+      file: file,
+    );
+
+    imageRes.fold((l) => showSnackBar(context, l.message), (r) async {
+      final Post post = Post(
+          id: postId,
+          title: title,
+          communityName: selectedCommunity.name,
+          communityId: selectedCommunity.id,
+          communityProfile: selectedCommunity.avatar,
+          upvotes: [],
+          downvotes: [],
+          commentCount: 0,
+          username: user.name,
+          uid: user.uid,
+          type: 'image',
+          isAnonymous: isAnonymous,
+          createdAt: DateTime.now(),
+          link: r,
+        description: description
+      );
+      final res = await _postRepository.addPost(post);
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, 'Posted successfully!');
+      Routemaster.of(context).push('/post/$postId/comments');
       });
     });
   }

@@ -43,7 +43,7 @@ class _AddPostTypesState extends ConsumerState<AddPostTypes> {
     }
   }
 
-  void sharePost() {
+  /* void sharePost() {
     if (widget.type == 'image' &&
         bannerFile != null &&
         titleController.text.isNotEmpty) {
@@ -75,7 +75,7 @@ class _AddPostTypesState extends ConsumerState<AddPostTypes> {
     } else {
       showSnackBar(context, 'Please enter all the fields');
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class _AddPostTypesState extends ConsumerState<AddPostTypes> {
           title: Text('Post ${widget.type}'),
           actions: [
             TextButton(
-              onPressed: () => sharePost(),
+              onPressed: () => {},
               child: const Text(
                 'Share',
                 style: TextStyle(color: Colors.white),
