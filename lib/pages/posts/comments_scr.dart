@@ -5,6 +5,7 @@ import 'package:socialwall/pages/comp/comment.card.dart';
 import 'package:socialwall/pages/comp/error_text.dart';
 import 'package:socialwall/pages/comp/loader.dart';
 import 'package:socialwall/pages/comp/post_card.dart';
+import 'package:socialwall/models/comment_model.dart';
 
 class CommentsScreen extends ConsumerStatefulWidget {
   final String postId;
@@ -28,15 +29,40 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
 
   void addComment(String postId) {
     final post = ref.read(getPostByIdProvider(postId)).requireValue;
+    String type = 'post';
     ref.read(postControllerProvider.notifier).addComment(
           context: context,
           text: commentController.text.trim(),
           post: post,
+          type: type,
         );
     setState(() {
       commentController.text = '';
     });
   }
+
+
+  CommentCard displayComments(Comment comment) {
+    return CommentCard(comment: comment,depth: 0);
+  }
+
+  /* 
+  Expanded(
+        child: Column(children: [
+      CommentCard(comment: comment),
+      Expanded(
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: data.length,
+          itemBuilder: (BuildContext context, int index) {
+            final comment = data[index];
+            return (CommentCard(comment: comment));
+          },
+        ),
+      ),
+    ]));
+    
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +99,6 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            const Divider(
-                              color: Colors.black,
-                            ),
                             if (data.isEmpty)
                               const Center(child: Text('No comments yet.'))
                             else
@@ -86,7 +109,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     final comment = data[index];
-                                    return CommentCard(comment: comment);
+                                    return displayComments(comment);
                                   },
                                 ),
                               ),

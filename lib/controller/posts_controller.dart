@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
@@ -23,22 +22,32 @@ final postControllerProvider =
   );
 });
 
-final userPostsProvider = StreamProvider.family((ref, List<Community> communities) {
+final userPostsProvider =
+    StreamProvider.family((ref, List<Community> communities) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.fetchUserPosts(communities);
 });
 
-final getPostByIdProvider = StreamProvider.family((ref, String postId){
+final getPostByIdProvider = StreamProvider.family((ref, String postId) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.getPostById(postId);
 });
 
-final getPostCommentsProvider = StreamProvider.family((ref, String postId){
+final getPostCommentsProvider = StreamProvider.family((ref, String postId) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.fetchPostComments(postId);
 });
 
+final getCommentByIdProvider = StreamProvider.family((ref, String commentId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getCommentsById(commentId);
+});
 
+final getCommentRepliesProvider =
+    StreamProvider.family((ref, String commentId) {
+  final commentController = ref.watch(postControllerProvider.notifier);
+  return commentController.fetchCommentReplies(commentId);
+});
 
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
@@ -168,18 +177,18 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
-   Stream<List<Post>> fetchUserPosts(List<Community> communities) {
+  Stream<List<Post>> fetchUserPosts(List<Community> communities) {
     if (communities.isNotEmpty) {
       return _postRepository.fetchUserPosts(communities);
     }
     return Stream.value([]);
   }
 
-  void deletePost(Post post, BuildContext context) async{
+  void deletePost(Post post, BuildContext context) async {
     final res = await _postRepository.deletePost(post);
-    res.fold((l) => null, (r) => showSnackBar(context,'Post deleted successfully!'));
+    res.fold((l) => null,
+        (r) => showSnackBar(context, 'Post deleted successfully!'));
   }
-
 
   void upvote(Post post) async {
     final uid = _ref.read(userProvider)!.uid;
@@ -191,28 +200,85 @@ class PostController extends StateNotifier<bool> {
     _postRepository.downvote(post, uid);
   }
 
- Stream<Post> getPostById(String postId){
-  return _postRepository.getPostById(postId);
+  void upvoteComm(Comment comment) async {
+    final uid = _ref.read(userProvider)!.uid;
+    _postRepository.upvoteComm(comment, uid);
+  }
 
- }
+  void downvoteComm(Comment comment) async {
+    final uid = _ref.read(userProvider)!.uid;
+    _postRepository.downvoteComm(comment, uid);
+  }
+
+  Stream<Post> getPostById(String postId) {
+    return _postRepository.getPostById(postId);
+  }
+
+  Stream<Comment> getCommentsById(String commentId) {
+    return _postRepository.getCommentsById(commentId);
+  }
 
   void addComment({
     required BuildContext context,
     required String text,
     required Post post,
-  }
-  ) async {
+    required String type,
+  }) async {
     final user = _ref.read(userProvider)!;
     String commentId = const Uuid().v1();
-    Comment comment = Comment(id: commentId, text: text, createdAt: DateTime.now(), postId: post.id, username: user.name, profilePic: user.propic,
-          uid: user.uid,);
+    Comment comment = Comment(
+      id: commentId,
+      text: text,
+      createdAt: DateTime.now(),
+      postId: post.id,
+      username: user.name,
+      profilePic: user.propic,
+      type: type,
+      uid: user.uid,
+      upvotes: [],
+      downvotes: [],
+      actualPost: post.id,
+    );
     final res = await _postRepository.addComment(comment);
-    res.fold((l) => showSnackBar(context,l.message), (r) => null);
+    res.fold((l) => showSnackBar(context, l.message), (r) => null);
+  }
+
+  Future<String> getActualPostId(String commentId) async {
+    Comment commentSnapshot = await _postRepository.getCommentsById(commentId).first;
+    String actualPostId= commentSnapshot.actualPost;
+    return actualPostId;
+  }
+
+  void addReply({
+    required BuildContext context,
+    required String text,
+    required Comment post,
+    required String type,
+  }) async {
+    final user = _ref.read(userProvider)!;
+    String commentId = const Uuid().v1();
+    String actualPostId = await getActualPostId(post.id);
+    Comment comment = Comment(
+        id: commentId,
+        text: text,
+        createdAt: DateTime.now(),
+        postId: post.id,
+        username: user.name,
+        profilePic: user.propic,
+        type: type,
+        uid: user.uid,
+        upvotes: [],
+        downvotes: [],
+        actualPost: actualPostId);
+    final res = await _postRepository.addComment(comment);
+    res.fold((l) => showSnackBar(context, l.message), (r) => null);
   }
 
   Stream<List<Comment>> fetchPostComments(String postId) {
     return _postRepository.getCommentsOfPost(postId);
   }
 
-
+  Stream<List<Comment>> fetchCommentReplies(String commentId) {
+    return _postRepository.getRepliesOfComment(commentId);
+  }
 }

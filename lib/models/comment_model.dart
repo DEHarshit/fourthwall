@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Comment {
   final String id;
   final String text;
@@ -5,7 +7,11 @@ class Comment {
   final String postId;
   final String username;
   final String profilePic;
+  final String type; // replying to a post, comment or another reply
   final String uid;
+  final List<String> upvotes;
+  final List<String> downvotes;
+  final String actualPost;
   Comment({
     required this.id,
     required this.text,
@@ -13,7 +19,11 @@ class Comment {
     required this.postId,
     required this.username,
     required this.profilePic,
+    required this.type,
     required this.uid,
+    required this.upvotes,
+    required this.downvotes,
+    required this.actualPost,
   });
 
   Comment copyWith({
@@ -23,7 +33,11 @@ class Comment {
     String? postId,
     String? username,
     String? profilePic,
+    String? type,
     String? uid,
+    List<String>? upvotes,
+    List<String>? downvotes,
+    String? actualPost,
   }) {
     return Comment(
       id: id ?? this.id,
@@ -32,7 +46,11 @@ class Comment {
       postId: postId ?? this.postId,
       username: username ?? this.username,
       profilePic: profilePic ?? this.profilePic,
+      type: type ?? this.type,
       uid: uid ?? this.uid,
+      upvotes: upvotes ?? this.upvotes,
+      downvotes: downvotes ?? this.downvotes,
+      actualPost: actualPost ?? this.actualPost,
     );
   }
 
@@ -44,7 +62,11 @@ class Comment {
       'postId': postId,
       'username': username,
       'profilePic': profilePic,
+      'type': type,
       'uid': uid,
+      'upvotes': upvotes,
+      'downvotes': downvotes,
+      'actualPost': actualPost,
     };
   }
 
@@ -56,13 +78,17 @@ class Comment {
       postId: map['postId'] ?? '',
       username: map['username'] ?? '',
       profilePic: map['profilePic'] ?? '',
+      type: map['type'] ?? '',
       uid: map['uid'] ?? '',
+      upvotes: List<String>.from(map['upvotes']),
+      downvotes: List<String>.from(map['downvotes']),
+      actualPost: map['actualPost'] ?? '',
     );
   }
 
   @override
   String toString() {
-    return 'Comment(id: $id, text: $text, createdAt: $createdAt, postId: $postId, username: $username, profilePic: $profilePic, uid: $uid)';
+    return 'Comment(id: $id, text: $text, createdAt: $createdAt, postId: $postId, username: $username, profilePic: $profilePic, type: $type, uid: $uid, upvotes: $upvotes, downvotes: $downvotes, actualPost: $actualPost)';
   }
 
   @override
@@ -76,7 +102,11 @@ class Comment {
         other.postId == postId &&
         other.username == username &&
         other.profilePic == profilePic &&
-        other.uid == uid;
+        other.type == type &&
+        other.uid == uid &&
+        listEquals(other.upvotes, upvotes) &&
+        listEquals(other.downvotes, downvotes) &&
+        other.actualPost == actualPost;
   }
 
   @override
@@ -87,6 +117,10 @@ class Comment {
         postId.hashCode ^
         username.hashCode ^
         profilePic.hashCode ^
-        uid.hashCode;
+        type.hashCode ^
+        uid.hashCode ^
+        upvotes.hashCode ^
+        downvotes.hashCode ^
+        actualPost.hashCode;
   }
 }

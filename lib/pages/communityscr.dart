@@ -19,6 +19,9 @@ class CommunityScreen extends ConsumerWidget {
     Routemaster.of(context).push('/$name/mod-tools');
   }
 
+  void navToQuestion(BuildContext context) {
+  }
+
   void joinDepartment(
       WidgetRef ref, Community department, BuildContext context) {
     ref
@@ -125,7 +128,7 @@ class CommunityScreen extends ConsumerWidget {
                                               : 'Join'),
                                     ),
                               OutlinedButton(
-                                onPressed: () => navToTools(context),
+                                onPressed: () => navToQuestion(context),
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),

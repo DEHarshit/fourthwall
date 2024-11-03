@@ -8,6 +8,7 @@ import 'package:socialwall/pages/home.dart';
 import 'package:socialwall/pages/login.dart';
 import 'package:socialwall/pages/posts/add_posts_type.dart';
 import 'package:socialwall/pages/posts/comments_scr.dart';
+import 'package:socialwall/pages/posts/add_comments.dart';
 import 'package:socialwall/pages/tools.dart';
 import 'package:socialwall/pages/userprofile/edit_profile.dart';
 import 'package:socialwall/pages/userprofile/profile.dart';
@@ -50,4 +51,7 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/post/:postId/comments': (route) => MaterialPage(
       child: CommentsScreen(postId: route.pathParameters['postId']!)),
+  '/post/:postId/comments/:commentId': (route) => MaterialPage(
+    child: AddCommentsScreen(commentId: route.pathParameters['commentId']!),
+  )
 });
