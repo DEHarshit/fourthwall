@@ -31,32 +31,35 @@ class CommunityRepository {
     }
   }
 
-  FutureVoid joinDepartment(String departmentName, String uid) async{
-    try{
-        return right (_departments.doc(departmentName).update({
-          'members': FieldValue.arrayUnion([uid]),
-        }));
-    } on FirebaseException catch(e){
+  FutureVoid joinDepartment(String departmentName, String uid) async {
+    try {
+      return right(_departments.doc(departmentName).update({
+        'members': FieldValue.arrayUnion([uid]),
+      }));
+    } on FirebaseException catch (e) {
       throw e.message!;
-    } catch(e){
+    } catch (e) {
       return left(Failure(e.toString()));
     }
   }
 
-  FutureVoid leaveDepartment(String departmentName, String uid) async{
-    try{
-        return right (_departments.doc(departmentName).update({
-          'members': FieldValue.arrayRemove([uid]),
-        }));
-    } on FirebaseException catch(e){
+  FutureVoid leaveDepartment(String departmentName, String uid) async {
+    try {
+      return right(_departments.doc(departmentName).update({
+        'members': FieldValue.arrayRemove([uid]),
+      }));
+    } on FirebaseException catch (e) {
       throw e.message!;
-    } catch(e){
+    } catch (e) {
       return left(Failure(e.toString()));
     }
   }
 
   Stream<List<Community>> getUserDepartments(String uid) {
-    return _departments.where('members', arrayContains: uid).snapshots().map((event) {
+    return _departments
+        .where('members', arrayContains: uid)
+        .snapshots()
+        .map((event) {
       List<Community> departments = [];
       for (var doc in event.docs) {
         departments.add(Community.fromMap(doc.data() as Map<String, dynamic>));
@@ -97,17 +100,23 @@ class CommunityRepository {
 
   Stream<List<Community>> searchCommunity(String query) {
     query = query.replaceAll(RegExp(r"\s+"), "").toLowerCase();
-    return _departments.where(
-      'name',
-      isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-      isLessThan: query.isEmpty ? null : query.substring(0, query.length - 1) +
-          String.fromCharCode(
-            query.codeUnitAt(query.length - 1) + 1,
-          ),
-    ).snapshots().map((event){
+    return _departments
+        .where(
+          'name',
+          isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+          isLessThan: query.isEmpty
+              ? null
+              : query.substring(0, query.length - 1) +
+                  String.fromCharCode(
+                    query.codeUnitAt(query.length - 1) + 1,
+                  ),
+        )
+        .snapshots()
+        .map((event) {
       List<Community> departments = [];
-      for(var department in event.docs){
-        departments.add(Community.fromMap(department.data() as Map<String, dynamic>));
+      for (var department in event.docs) {
+        departments
+            .add(Community.fromMap(department.data() as Map<String, dynamic>));
       }
       return departments;
     });
@@ -115,13 +124,11 @@ class CommunityRepository {
 
   //save mods
 
-  FutureVoid addMods(String departmentName,List<String> uids) async {
+  FutureVoid addMods(String departmentName, List<String> uids) async {
     try {
-      return right(
-          _departments.doc(departmentName).update({
-            'mods':uids,
-          })
-      );
+      return right(_departments.doc(departmentName).update({
+        'mods': uids,
+      }));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -129,14 +136,11 @@ class CommunityRepository {
     }
   }
 
-
-
   CollectionReference get _departments =>
       _firestore.collection(FirebaseConstants.departmentsCollection);
-    
-  CollectionReference get _posts =>
-      _firestore.collection(FirebaseConstants.postsCollection);  
 
+  CollectionReference get _posts =>
+      _firestore.collection(FirebaseConstants.postsCollection);
 
   Stream<List<Post>> getCommunityPosts(String name) {
     return _posts
@@ -148,5 +152,33 @@ class CommunityRepository {
               .map((e) => Post.fromMap(e.data() as Map<String, dynamic>))
               .toList(),
         );
+  }
+
+  FutureVoid updateCommunity(Community community, String category) async {
+    try {
+      await _departments.doc(community.name).update({
+        'subjects': FieldValue.arrayUnion([category]),
+      });
+      return right(null);
+    } on FirebaseException catch (e) {
+      return left(Failure(e.message!));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  Future<List<String>> getSubjectsForCommunity(String communityName) async {
+    try {
+      final communityDoc = await _departments.doc(communityName).get();
+      if (communityDoc.exists) {
+        final communityData = communityDoc.data() as Map<String, dynamic>;
+        final subjects = List<String>.from(communityData['subjects'] ?? []);
+        return subjects;
+      } else {
+        throw 'Community not found';
+      }
+    } catch (e) {
+      throw 'Error fetching subjects: $e';
+    }
   }
 }

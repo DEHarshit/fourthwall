@@ -257,6 +257,7 @@ class PostController extends StateNotifier<bool> {
   Stream<Post> getPostById(String postId) {
     return _postRepository.getPostById(postId);
   }
+  
 
   Stream<Comment> getCommentsById(String commentId) {
     return _postRepository.getCommentsById(commentId);

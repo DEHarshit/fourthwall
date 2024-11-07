@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:socialwall/pages/add_mods.dart';
+import 'package:socialwall/pages/questionpaper/category_management_page.dart';
+import 'package:socialwall/pages/questionpaper/community_question.dart';
+import 'package:socialwall/pages/communities/community_reports.dart';
 import 'package:socialwall/pages/communityscr.dart';
 import 'package:socialwall/pages/create_comm.dart';
 import 'package:socialwall/pages/edit_comm.dart';
@@ -9,6 +12,8 @@ import 'package:socialwall/pages/login.dart';
 import 'package:socialwall/pages/posts/add_posts_type.dart';
 import 'package:socialwall/pages/posts/comments_scr.dart';
 import 'package:socialwall/pages/posts/add_comments.dart';
+import 'package:socialwall/pages/questionpaper/question_comments.dart';
+import 'package:socialwall/pages/questionpaper/upload_question_paper_page.dart';
 import 'package:socialwall/pages/tools.dart';
 import 'package:socialwall/pages/userprofile/edit_profile.dart';
 import 'package:socialwall/pages/userprofile/profile.dart';
@@ -38,6 +43,24 @@ final loggedInRoute = RouteMap(routes: {
           child: AddModsScreen(
         name: routeData.pathParameters['name']!,
       )),
+  '/:name/report-screen': (routeData) => MaterialPage(
+          child: ReportsScreen(
+        name: routeData.pathParameters['name']!,
+      )),
+  '/:name/question-paper': (routeData) => MaterialPage(
+          child: QuestionsScreen(
+        name: routeData.pathParameters['name']!,
+      )),
+  '/question/:postId/comments': (route) => MaterialPage(
+      child: QuestionCommentsScreen(postId: route.pathParameters['postId']!)),
+  '/:name/question-paper/add': (routeData) => MaterialPage(
+          child: AddQuestionPaperScreen(
+        name: routeData.pathParameters['name']!,
+      )),
+  '/:name/question-paper/category': (routeData) => MaterialPage(
+          child: CategoryManagementPage(
+        name: routeData.pathParameters['name']!,
+      )),
   '/user/:uid': (routeData) => MaterialPage(
           child: UserProfile(
         uid: routeData.pathParameters['uid']!,
@@ -52,6 +75,6 @@ final loggedInRoute = RouteMap(routes: {
   '/post/:postId/comments': (route) => MaterialPage(
       child: CommentsScreen(postId: route.pathParameters['postId']!)),
   '/post/:postId/comments/:commentId': (route) => MaterialPage(
-    child: AddCommentsScreen(commentId: route.pathParameters['commentId']!),
-  )
+        child: AddCommentsScreen(commentId: route.pathParameters['commentId']!),
+      )
 });

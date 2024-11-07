@@ -44,10 +44,8 @@ final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
       .getCommunityByName(name);
 });
 
-final searchCommunityProvider = StreamProvider.family((ref,String query) {
-  return ref
-      .watch(communityControllerProvider.notifier)
-      .searchCommunity(query);
+final searchCommunityProvider = StreamProvider.family((ref, String query) {
+  return ref.watch(communityControllerProvider.notifier).searchCommunity(query);
 });
 
 class CommunityController extends StateNotifier<bool> {
@@ -71,6 +69,7 @@ class CommunityController extends StateNotifier<bool> {
       name: name.replaceAll(RegExp(r"\s+"), "").toLowerCase(),
       banner: Constants.bannerDefault,
       avatar: Constants.avatarDefault,
+      subjects: [],
       members: [uid],
       mods: [uid],
     );
@@ -83,25 +82,27 @@ class CommunityController extends StateNotifier<bool> {
     });
   }
 
-  void joinDepartment(Community department,BuildContext context) async{
+  void joinDepartment(Community department, BuildContext context) async {
     final user = _ref.read(userProvider)!;
 
     Either<Failure, void> res;
 
-    if(department.members.contains(user.uid)){
-      res = await _communityRepository.leaveDepartment(department.name, user.uid);
+    if (department.members.contains(user.uid)) {
+      res =
+          await _communityRepository.leaveDepartment(department.name, user.uid);
     } else {
-      res = await _communityRepository.joinDepartment(department.name, user.uid);
+      res =
+          await _communityRepository.joinDepartment(department.name, user.uid);
     }
-    res.fold((l) => showSnackBar(context,l.message), (r) => {
-      if(department.members.contains(user.uid)){
-        showSnackBar(context, 'Department left successfully!')
-      } else {
-        showSnackBar(context, 'Department joined successfully!')
-      }
-    });
+    res.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) => {
+              if (department.members.contains(user.uid))
+                {showSnackBar(context, 'Department left successfully!')}
+              else
+                {showSnackBar(context, 'Department joined successfully!')}
+            });
   }
-
 
   Stream<List<Community>> getUserDepartments() {
     final uid = _ref.read(userProvider)!.uid;
@@ -111,7 +112,6 @@ class CommunityController extends StateNotifier<bool> {
   Stream<List<Community>> getDepartments() {
     return _communityRepository.getDepartments();
   }
-
 
   Stream<Community> getCommunityByName(String name) {
     return _communityRepository.getCommunityByName(name);
@@ -154,11 +154,12 @@ class CommunityController extends StateNotifier<bool> {
         (r) => Routemaster.of(context).pop());
   }
 
-  Stream<List<Community>> searchCommunity(String query){
+  Stream<List<Community>> searchCommunity(String query) {
     return _communityRepository.searchCommunity(query);
   }
 
-  void addMods(String departmentName,List<String> uids, BuildContext context) async {
+  void addMods(
+      String departmentName, List<String> uids, BuildContext context) async {
     final res = await _communityRepository.addMods(departmentName, uids);
     res.fold((l) => showSnackBar(context, l.message),
         (r) => Routemaster.of(context).pop());
@@ -166,5 +167,48 @@ class CommunityController extends StateNotifier<bool> {
 
   Stream<List<Post>> getCommunityPosts(String name) {
     return _communityRepository.getCommunityPosts(name);
+  }
+
+  void addCategoryToCommunity(
+      String communityName, String category, BuildContext context) async {
+    state = true;
+
+    try {
+      final communityStream = getCommunityByName(communityName);
+      final community = await communityStream.first;
+      community.subjects.add(category);
+      final res =
+          await _communityRepository.updateCommunity(community, category);
+      res.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) {
+          showSnackBar(context, 'Category added successfully!');
+        },
+      );
+
+      state = false;
+    } catch (e) {
+      state = false;
+      showSnackBar(context, 'Failed to add category: $e');
+    }
+  }
+
+  Future<void> fetchSubjectsForCommunity(
+      String communityName, BuildContext context) async {
+    state = true;
+    try {
+      // Call repository to fetch the subjects
+      final subjects =
+          await _communityRepository.getSubjectsForCommunity(communityName);
+
+      // Handle success, e.g., show subjects in the UI
+      showSnackBar(context, 'Subjects fetched successfully: $subjects');
+
+      state = false;
+    } catch (e) {
+      // Handle error
+      showSnackBar(context, 'Failed to fetch subjects: $e');
+      state = false;
+    }
   }
 }

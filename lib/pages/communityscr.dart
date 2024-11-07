@@ -20,6 +20,7 @@ class CommunityScreen extends ConsumerWidget {
   }
 
   void navToQuestion(BuildContext context) {
+    Routemaster.of(context).push('/$name/question-paper');
   }
 
   void joinDepartment(

@@ -16,6 +16,10 @@ class ToolsScreen extends StatelessWidget {
     Routemaster.of(context).push('/$name/add-mods');
   }
 
+  void navToReportScreen(BuildContext context){
+    Routemaster.of(context).push('/$name/report-screen');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +35,11 @@ class ToolsScreen extends StatelessWidget {
             leading: const Icon(Icons.edit),
             title: const Text('Edit Department'),
             onTap: () => navToEditDepart(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.report),
+            title: const Text('View Reports'),
+            onTap: () => navToReportScreen(context),
           )
         ],
       ),

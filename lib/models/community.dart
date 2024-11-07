@@ -5,6 +5,7 @@ class Community {
   final String name;
   final String banner;
   final String avatar;
+  final List<String> subjects;
   final List<String> members;
   final List<String> mods;
   Community({
@@ -12,6 +13,7 @@ class Community {
     required this.name,
     required this.banner,
     required this.avatar,
+    required this.subjects,
     required this.members,
     required this.mods,
   });
@@ -21,6 +23,7 @@ class Community {
     String? name,
     String? banner,
     String? avatar,
+    List<String>? subjects,
     List<String>? members,
     List<String>? mods,
   }) {
@@ -29,6 +32,7 @@ class Community {
       name: name ?? this.name,
       banner: banner ?? this.banner,
       avatar: avatar ?? this.avatar,
+      subjects: subjects ?? this.subjects,
       members: members ?? this.members,
       mods: mods ?? this.mods,
     );
@@ -40,6 +44,7 @@ class Community {
       'name': name,
       'banner': banner,
       'avatar': avatar,
+      'subjects' : subjects,
       'members': members,
       'mods': mods,
     };
@@ -51,6 +56,7 @@ class Community {
       name: map['name'] ?? '',
       banner: map['banner'] ?? '',
       avatar: map['avatar'] ?? '',
+      subjects: List<String>.from(map['subjects']),
       members: List<String>.from(map['members']),
       mods: List<String>.from(map['mods']),
     );
@@ -58,7 +64,7 @@ class Community {
 
   @override
   String toString() {
-    return 'Community(id: $id, name: $name, banner: $banner, avatar: $avatar, members: $members, mods: $mods)';
+    return 'Community(id: $id, name: $name, banner: $banner, avatar: $avatar,subjects: $subjects, members: $members, mods: $mods)';
   }
 
   @override
@@ -70,12 +76,13 @@ class Community {
         other.name == name &&
         other.banner == banner &&
         other.avatar == avatar &&
+        listEquals(other.subjects, subjects) &&
         listEquals(other.members, members) &&
         listEquals(other.mods, mods);
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ name.hashCode ^ banner.hashCode ^ avatar.hashCode ^ members.hashCode ^ mods.hashCode;
+    return id.hashCode ^ name.hashCode ^ banner.hashCode ^ avatar.hashCode ^ subjects.hashCode ^ members.hashCode ^ mods.hashCode;
   }
 }

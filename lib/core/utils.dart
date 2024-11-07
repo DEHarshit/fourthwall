@@ -17,3 +17,10 @@ Future<FilePickerResult?> pickImage() async {
 
      return image;
 }
+
+Future<FilePickerResult?> pickPdfFile() async {
+  return await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: ['pdf'],
+  );
+}
